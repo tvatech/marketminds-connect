@@ -1,8 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp, LineChart, PieChart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Logged out successfully",
+        duration: 2000,
+      });
+      
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast({
+        title: "Error logging out",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Header */}
@@ -13,7 +39,10 @@ const Index = () => {
               <BarChart3 className="h-8 w-8 text-primary mr-2" />
               <h1 className="text-2xl font-bold text-gray-900">StockPred</h1>
             </div>
-            <Button variant="outline" onClick={() => console.log("Logout clicked")}>
+            <Button 
+              variant="outline" 
+              onClick={handleLogout}
+            >
               Logout
             </Button>
           </div>
