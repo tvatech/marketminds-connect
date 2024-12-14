@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { BarChart3, Lock, Mail, Facebook, Google } from "lucide-react";
+import { BarChart3, Lock, Mail, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const Login = () => {
@@ -53,7 +53,7 @@ const Login = () => {
               className="w-full flex items-center justify-center gap-2"
               onClick={() => handleSocialLogin('google')}
             >
-              <Google className="h-5 w-5" />
+              <Mail className="h-5 w-5" />
               Continue with Google
             </Button>
             <Button
