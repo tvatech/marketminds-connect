@@ -6,32 +6,33 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { BarChart3, Lock, Mail, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    // This is a temporary simulation - replace with actual Supabase auth
     console.log("Login attempted with:", { email, password });
-    toast({
-      title: "Authentication Required",
-      description: "Please connect Supabase to enable authentication.",
-      variant: "destructive",
-    });
-    setIsLoading(false);
+    setTimeout(() => {
+      navigate("/dashboard");
+      setIsLoading(false);
+    }, 1000);
   };
 
   const handleSocialLogin = (provider: string) => {
     console.log(`${provider} login attempted`);
-    toast({
-      title: "Authentication Required",
-      description: "Please connect Supabase to enable social authentication.",
-      variant: "destructive",
-    });
+    // This is temporary - replace with actual Supabase social auth
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1000);
   };
 
   return (
