@@ -36,7 +36,22 @@ export const EmailForm = ({ isSignUp, onToggleMode }: EmailFormProps) => {
             password,
           });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message === "Email not confirmed") {
+          toast({
+            title: "Email not verified",
+            description: "Please check your email and click the verification link before logging in.",
+            duration: 5000,
+          });
+        } else {
+          toast({
+            title: isSignUp ? "Error creating account" : "Error logging in",
+            description: error.message || "Please try again",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
 
       toast({
         title: isSignUp ? "Account created successfully" : "Logged in successfully",
