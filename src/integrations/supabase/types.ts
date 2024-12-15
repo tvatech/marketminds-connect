@@ -9,7 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      stocks: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          debt_equity_ratio: number | null
+          dividend_yield: number | null
+          eps: number | null
+          id: string
+          pb_ratio: number | null
+          pe_ratio: number | null
+          roe: number | null
+          ticker: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          debt_equity_ratio?: number | null
+          dividend_yield?: number | null
+          eps?: number | null
+          id?: string
+          pb_ratio?: number | null
+          pe_ratio?: number | null
+          roe?: number | null
+          ticker: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          debt_equity_ratio?: number | null
+          dividend_yield?: number | null
+          eps?: number | null
+          id?: string
+          pb_ratio?: number | null
+          pe_ratio?: number | null
+          roe?: number | null
+          ticker?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
