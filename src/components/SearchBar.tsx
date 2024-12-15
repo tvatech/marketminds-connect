@@ -14,10 +14,9 @@ interface StockSuggestion {
 }
 
 const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const { data: suggestions } = useQuery({
+  const { data: suggestions, isLoading } = useQuery({
     queryKey: ['stockSuggestions', searchValue],
     queryFn: async () => {
       console.log('Fetching suggestions for:', searchValue);
@@ -46,28 +45,35 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
               onValueChange={setSearchValue}
             />
           </div>
-          {searchValue.length > 0 && (
-            <CommandList>
-              <CommandEmpty>No stocks found.</CommandEmpty>
-              <CommandGroup heading="Suggestions">
-                {suggestions?.map((stock) => (
-                  <CommandItem
-                    key={stock.ticker}
-                    value={stock.ticker}
-                    onSelect={(value) => {
-                      onSearch(value);
-                      setSearchValue("");
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-medium">{stock.ticker}</span>
-                      <span className="text-sm text-gray-500">{stock.company_name}</span>
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          )}
+          <CommandList>
+            {isLoading ? (
+              <CommandEmpty>Loading suggestions...</CommandEmpty>
+            ) : searchValue.length > 0 ? (
+              <>
+                {!suggestions?.length ? (
+                  <CommandEmpty>No stocks found.</CommandEmpty>
+                ) : (
+                  <CommandGroup heading="Suggestions">
+                    {suggestions.map((stock) => (
+                      <CommandItem
+                        key={stock.ticker}
+                        value={stock.ticker}
+                        onSelect={(value) => {
+                          onSearch(value);
+                          setSearchValue("");
+                        }}
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium">{stock.ticker}</span>
+                          <span className="text-sm text-gray-500">{stock.company_name}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </>
+            ) : null}
+          </CommandList>
         </Command>
       </div>
     </div>
