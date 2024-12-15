@@ -18,18 +18,19 @@ interface StockData {
 }
 
 const StockDetails = ({ ticker }: StockDetailsProps) => {
-  const { data: stock, isLoading } = useQuery({
+  const { data: stock, isLoading, error } = useQuery({
     queryKey: ['stock', ticker],
     queryFn: async () => {
       console.log('Fetching stock data for:', ticker);
       const { data, error } = await supabase
         .from('stocks')
         .select('*')
-        .eq('ticker', ticker.toUpperCase())
-        .single();
+        .eq('ticker', ticker.toUpperCase());
 
       if (error) throw error;
-      return data as StockData;
+      
+      // Return the first result if found, otherwise null
+      return data && data.length > 0 ? (data[0] as StockData) : null;
     },
     enabled: !!ticker,
   });
@@ -38,8 +39,23 @@ const StockDetails = ({ ticker }: StockDetailsProps) => {
     return <div className="text-center">Loading stock details...</div>;
   }
 
+  if (error) {
+    return <div className="text-center text-red-500">Error loading stock data: {error.message}</div>;
+  }
+
   if (!stock) {
-    return <div className="text-center">No data found for {ticker}</div>;
+    return (
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle>Stock Not Found</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center text-gray-500">
+            No data found for ticker: {ticker.toUpperCase()}
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   const metrics = [
