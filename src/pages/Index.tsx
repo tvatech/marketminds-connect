@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, TrendingUp, LineChart, PieChart } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import SearchBar from "@/components/SearchBar";
+import FundamentalAnalysis from "@/components/FundamentalAnalysis";
+import TechnicalAnalysis from "@/components/TechnicalAnalysis";
+import PortfolioManagement from "@/components/PortfolioManagement";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -51,63 +54,12 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to StockPred</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Your advanced AI-powered platform for stock market prediction and analysis
-          </p>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Market Predictions
-              </CardTitle>
-              <CardDescription>AI-powered market trend predictions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Get accurate predictions for market trends using our advanced machine learning algorithms
-                that analyze historical data and market patterns.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LineChart className="h-5 w-5 text-primary" />
-                Technical Analysis
-              </CardTitle>
-              <CardDescription>Comprehensive technical indicators</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Access detailed technical analysis including moving averages, RSI, MACD, and other key
-                indicators for informed decision-making.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PieChart className="h-5 w-5 text-primary" />
-                Portfolio Analytics
-              </CardTitle>
-              <CardDescription>Smart portfolio management</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Track and analyze your portfolio performance with real-time updates and personalized
-                recommendations for optimization.
-              </p>
-            </CardContent>
-          </Card>
+        <SearchBar />
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <FundamentalAnalysis />
+          <TechnicalAnalysis />
+          <PortfolioManagement />
         </div>
       </main>
     </div>
