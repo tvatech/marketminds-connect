@@ -69,14 +69,16 @@ const Login = () => {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     try {
+      console.log("Starting social login with provider:", provider);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: "https://42b9625a-c303-4b3c-991d-d0a7dc02a2e4.lovableproject.com",
         },
       });
 
       if (error) throw error;
+      console.log("Social login initiated successfully");
     } catch (error: any) {
       console.error(`${provider} login error:`, error);
       toast({
