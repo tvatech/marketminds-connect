@@ -7,9 +7,13 @@ import SearchBar from "@/components/SearchBar";
 import FundamentalAnalysis from "@/components/FundamentalAnalysis";
 import TechnicalAnalysis from "@/components/TechnicalAnalysis";
 import PortfolioManagement from "@/components/PortfolioManagement";
+import StockDetails from "@/components/StockDetails";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [searchedTicker, setSearchedTicker] = useState<string>("");
+  const [showDashboard, setShowDashboard] = useState(true);
 
   const handleLogout = async () => {
     try {
@@ -32,9 +36,19 @@ const Index = () => {
     }
   };
 
+  const handleSearch = (ticker: string) => {
+    console.log('Search triggered for:', ticker);
+    setSearchedTicker(ticker);
+    setShowDashboard(false);
+  };
+
+  const handleBack = () => {
+    setSearchedTicker("");
+    setShowDashboard(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
@@ -52,15 +66,24 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <SearchBar />
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <FundamentalAnalysis />
-          <TechnicalAnalysis />
-          <PortfolioManagement />
-        </div>
+        {showDashboard ? (
+          <>
+            <SearchBar onSearch={handleSearch} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FundamentalAnalysis />
+              <TechnicalAnalysis />
+              <PortfolioManagement />
+            </div>
+          </>
+        ) : (
+          <div className="space-y-6">
+            <Button onClick={handleBack} variant="outline" className="mb-4">
+              Back to Dashboard
+            </Button>
+            <StockDetails ticker={searchedTicker} />
+          </div>
+        )}
       </main>
     </div>
   );
