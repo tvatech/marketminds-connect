@@ -1,38 +1,75 @@
-import { Input } from "@/components/ui/input";
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SearchBarProps {
   onSearch: (ticker: string) => void;
 }
 
-const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [ticker, setTicker] = useState("");
+interface StockSuggestion {
+  ticker: string;
+  company_name: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (ticker.trim()) {
-      onSearch(ticker.trim());
-    }
-  };
+const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const { data: suggestions } = useQuery({
+    queryKey: ['stockSuggestions', searchValue],
+    queryFn: async () => {
+      console.log('Fetching suggestions for:', searchValue);
+      const { data, error } = await supabase
+        .from('stocks')
+        .select('ticker, company_name')
+        .or(`ticker.ilike.%${searchValue}%,company_name.ilike.%${searchValue}%`)
+        .limit(5);
+
+      if (error) throw error;
+      return data as StockSuggestion[];
+    },
+    enabled: searchValue.length > 0,
+  });
 
   return (
     <div className="w-full max-w-3xl mx-auto mb-8">
       <h2 className="text-2xl font-bold mb-4 text-center">Ticker</h2>
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            type="text"
-            placeholder="Search for stocks..."
-            className="pl-10"
-            value={ticker}
-            onChange={(e) => setTicker(e.target.value)}
-          />
-        </div>
-        <Button type="submit">Search</Button>
-      </form>
+      <div className="relative">
+        <Command className="border rounded-lg shadow-sm">
+          <div className="flex items-center border-b px-3">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <CommandInput
+              placeholder="Search for stocks..."
+              value={searchValue}
+              onValueChange={setSearchValue}
+            />
+          </div>
+          {searchValue.length > 0 && (
+            <CommandList>
+              <CommandEmpty>No stocks found.</CommandEmpty>
+              <CommandGroup heading="Suggestions">
+                {suggestions?.map((stock) => (
+                  <CommandItem
+                    key={stock.ticker}
+                    value={stock.ticker}
+                    onSelect={(value) => {
+                      onSearch(value);
+                      setSearchValue("");
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium">{stock.ticker}</span>
+                      <span className="text-sm text-gray-500">{stock.company_name}</span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          )}
+        </Command>
+      </div>
     </div>
   );
 };
