@@ -69,16 +69,25 @@ const Login = () => {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     try {
-      console.log("Starting social login with provider:", provider);
+      console.log(`Starting ${provider} login...`);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: "https://42b9625a-c303-4b3c-991d-d0a7dc02a2e4.lovableproject.com",
+          redirectTo: window.location.origin,
         },
       });
 
-      if (error) throw error;
-      console.log("Social login initiated successfully");
+      if (error) {
+        if (error.message.includes("not enabled")) {
+          toast({
+            title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} login not available`,
+            description: "This login method is not currently enabled. Please use email/password or contact support.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      }
     } catch (error: any) {
       console.error(`${provider} login error:`, error);
       toast({
